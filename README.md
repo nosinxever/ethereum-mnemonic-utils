@@ -1,4 +1,4 @@
-# Bath generate ethereum account from_mnemonic
+# Bath generate ethereum account from mnemonic
 
     pip install base58 ecdsa  eth-utils eth-hash[pycryptodome]
 
