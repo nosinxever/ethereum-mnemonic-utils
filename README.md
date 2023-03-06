@@ -1,4 +1,4 @@
-# bath_generate_ethereum_account_from_mnemonic
+# Bath generate ethereum account from_mnemonic
 
 pip install base58 ecdsa
 pip install eth-utils
