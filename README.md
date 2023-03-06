@@ -6,7 +6,7 @@ pip install eth-hash[pycryptodome]
 
 ### Mnemonic  > private key & address
 
-bath_generate_ethereum_account_from_mnemonic(mnemonic,number)
+    bath_generate_ethereum_account_from_mnemonic(mnemonic,number)
 
 
 
