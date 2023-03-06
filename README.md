@@ -1,8 +1,6 @@
 # Bath generate ethereum account from_mnemonic
 
-pip install base58 ecdsa
-pip install eth-utils
-pip install eth-hash[pycryptodome]
+    pip install base58 ecdsa  eth-utils eth-hash[pycryptodome]
 
 ### Mnemonic  > private key & address
 
