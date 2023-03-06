@@ -177,7 +177,7 @@ def generate_ethereum_address(private_key):
     
     return address_hex
 
-def bath_generate_ethereum_account_from_mnemonic(mnemonic,number):
+def batch_generate_ethereum_account_from_mnemonic(mnemonic,number):
     for i in range(number):
         str_derivation_path= f"m/44'/60'/0'/0/{i}"
         private_key=mnemonic_to_private_key(mnemonic,str_derivation_path)
@@ -193,4 +193,4 @@ def bath_generate_ethereum_account_from_mnemonic(mnemonic,number):
 if __name__ == '__main__':
     # test mnemonic
     mnemonic = "distance replace obvious camera math express vacant reopen notice marble social page alley retire visa hockey title attract chunk secret pottery zoo caught poverty"
-    bath_generate_ethereum_account_from_mnemonic(mnemonic,1000)
+    batch_generate_ethereum_account_from_mnemonic(mnemonic,1000)
