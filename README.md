@@ -1,3 +1,16 @@
+# bath_generate_ethereum_account_from_mnemonic
+
+pip install base58 ecdsa
+pip install eth-utils
+pip install eth-hash[pycryptodome]
+
+### Mnemonic  > private key & address
+
+bath_generate_ethereum_account_from_mnemonic(mnemonic,number)
+
+
+
+
 Ethereum Mnemonic Key Utils
 ================================
 
@@ -36,3 +49,7 @@ Logic adapted from https://github.com/satoshilabs/slips/blob/master/slip-0010/te
     import binascii
     from web3.auto import w3
     json_keyfile = w3.eth.account.privateKeyToAccount(binascii.unhexlify(private_key)).encrypt(b"any password")
+    
+    
+    
+    
