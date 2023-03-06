@@ -15,6 +15,11 @@ from ecdsa.curves import SECP256k1
 from eth_utils import keccak, to_checksum_address
 
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 BIP39_PBKDF2_ROUNDS = 2048
 BIP39_SALT_MODIFIER = "mnemonic"
 BIP32_PRIVDEV = 0x80000000
@@ -117,7 +122,8 @@ def parse_derivation_path(str_derivation_path):
 
     path = []
     if str_derivation_path[0:2] != 'm/':
-        raise ValueError("Can't recognize derivation path. It should look like \"m/44'/60/0'/0\".")
+        raise ValueError(
+            "Can't recognize derivation path. It should look like \"m/44'/60/0'/0\".")
 
     for i in str_derivation_path.lstrip('m/').split('/'):
         if "'" in i:
@@ -129,11 +135,11 @@ def parse_derivation_path(str_derivation_path):
 
 def mnemonic_to_private_key(mnemonic, str_derivation_path=ETH_DERIVATION_PATH, passphrase=""):
     """ Performs all convertions to get a private key from a mnemonic sentence, including:
-    
+
             BIP39 mnemonic to seed
             BIP32 seed to master key
             BIP32 child derivation of a path provided
-        
+
         Parameters:
             mnemonic -- seed wordlist, usually with 24 words, that is used for ledger wallet backup
             str_derivation_path -- string that directs BIP32 key derivation, defaults to path
@@ -145,18 +151,19 @@ def mnemonic_to_private_key(mnemonic, str_derivation_path=ETH_DERIVATION_PATH, p
 
     bip39seed = mnemonic_to_bip39seed(mnemonic, passphrase)
 
-    master_private_key, master_chain_code = bip39seed_to_bip32masternode(bip39seed)
+    master_private_key, master_chain_code = bip39seed_to_bip32masternode(
+        bip39seed)
 
     private_key, chain_code = master_private_key, master_chain_code
 
     for i in derivation_path:
-        private_key, chain_code = derive_bip32childkey(private_key, chain_code, i)
+        private_key, chain_code = derive_bip32childkey(
+            private_key, chain_code, i)
 
     # hexadecimal characters to a bytes object then encoding to convert this bytes object to a string
-    private_key= str(binascii.hexlify(private_key), 'utf-8')
+    private_key = str(binascii.hexlify(private_key), 'utf-8')
 
     return private_key
-
 
 
 def generate_ethereum_address(private_key):
@@ -164,7 +171,8 @@ def generate_ethereum_address(private_key):
     private_key_bytes = bytes.fromhex(private_key)
 
     # Get public key from private key
-    public_key_bytes = ecdsa.SigningKey.from_string(private_key_bytes, curve=ecdsa.SECP256k1).verifying_key.to_string()
+    public_key_bytes = ecdsa.SigningKey.from_string(
+        private_key_bytes, curve=ecdsa.SECP256k1).verifying_key.to_string()
 
     # Hash public key with Keccak-256
     keccak_hash = keccak(public_key_bytes)
@@ -174,23 +182,32 @@ def generate_ethereum_address(private_key):
 
     # Convert address to checksummed hex string
     address_hex = to_checksum_address(address)
-    
+
     return address_hex
 
-def batch_generate_ethereum_account_from_mnemonic(mnemonic,number):
+
+def batch_generate_ethereum_account_from_mnemonic(mnemonic, number):
+    account = []
     for i in range(number):
-        str_derivation_path= f"m/44'/60'/0'/0/{i}"
-        private_key=mnemonic_to_private_key(mnemonic,str_derivation_path)
-        address= generate_ethereum_address(private_key)
-        print(f"account: {i+1}") 
-        print(f"private key is: {private_key}") 
-        print(f"address is: {address}\n") 
+        str_derivation_path = f"m/44'/60'/0'/0/{i}"
+        private_key = mnemonic_to_private_key(mnemonic, str_derivation_path)
+        address = generate_ethereum_address(private_key)
+        # print(f"account: {i+1}")
+        # print(f"private key is: {private_key}")
+        # print(f"address is: {address}\n")
+        account.append((address, private_key))
+        with open(".env", "a")as f:
+            # f.write(f"ACCOUNT_{i}_ADDRESS={address}\n")
+            f.write(f"ACCOUNT_{i}_PRIVATE_KEY={private_key}\n")
 
-
-
+    return account
 
 
 if __name__ == '__main__':
     # test mnemonic
     mnemonic = "distance replace obvious camera math express vacant reopen notice marble social page alley retire visa hockey title attract chunk secret pottery zoo caught poverty"
-    batch_generate_ethereum_account_from_mnemonic(mnemonic,1000)
+    accouont_list = batch_generate_ethereum_account_from_mnemonic(
+        mnemonic, 300)
+
+    for i in range(300):
+        print(os.environ.get(f"ACCOUNT_{i}_PRIVATE_KEY"))
